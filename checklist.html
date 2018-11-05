@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!--TAGS-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <title>BootstrapVue Checklist</title>
+
+    <!--VUE.JS-->
+  <script type="text/javascript" src="js/vue.js"></script>
+
+  <!--CSS-->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+  
+
+  <!--SCRIPTS-->
+  <script src="https://unpkg.com/vue"></script>
+
+  
+  <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    
+</head>
+
+<body>
+
+  <!-- Our application root element which contains all bootstrap-Vue elements -->
+  <div id="app" style="background-color:dodgerblue">
+
+    <h2 style="color: white;"> Expense/Revenue calculator <b-badge variant="primary">V-0.02</b-badge>
+    </h2>
+
+    <b-modal v-model="modalShow">
+      New Entry Added<br>
+    </b-modal>
+
+    <!-- Tabs with card integration -->
+    <b-card no-body>
+
+      <b-tabs small card v-model="tabIndex">
+
+        
+
+        <b-tab title="Expense Streams">
+
+          Expense Name: <b-form-input v-model="text1" type="text" placeholder="Name"></b-form-input>
+
+          Expense Cost: <b-form-input v-model="text2" type="text" placeholder="Cost"></b-form-input>
+
+          <b-button size="lg" variant="danger" @click="addExpense">
+            Add Expense
+          </b-button>
+
+        </b-tab>
+          
+          <b-tab title="Revenue Streams">
+
+          Income Name: <b-form-input v-model="text1" type="text" placeholder="Name"></b-form-input>
+
+          Income Amout: <b-form-input v-model="text2" type="text" placeholder="Amount"></b-form-input>
+
+          <b-button size="lg" variant="success" @click="addRevenue">
+              Add Revenue
+          </b-button>
+
+        </b-tab>
+
+        <b-tab title="Transaction Ledger">
+          You have entered:
+          <b-table striped hover :items="items"></b-table>
+        </b-tab>
+
+    
+
+      </b-tabs>
+    </b-card>
+
+    <b-card class="text-center">
+      <h1 v-if ="netEarnings >=0">You have {{netEarnings}} dollars.</h1>
+      <h1 v-else>You are down {{Math.abs(netEarnings)}} dollars.</h1>
+      <p v-if="warningLevel === 1"> Your spending habbits are not sustainable! </p>
+      <p v-if="warningLevel === 2"> <b-alert show variant="danger"> immediate action must be taken! </b-alert> </p>
+
+    </b-card>
+
+
+    <!-- Control buttons-->
+    <div class="text-center">
+      <b-button-group class="mt-2" style="padding: 10px;">
+        <b-btn variant="primary" @click="tabIndex--">Previous Tab</b-btn>
+        <b-btn variant="primary" @click="tabIndex++" >Next Tab</b-btn>
+      </b-button-group>
+      <br>
+    </div>
+
+  </div>
+
+
+
+  <!-- Start running your app -->
+  <script>
+    window.app = new Vue({
+      el: "#app",
+      data: {
+        //Variables go here. key : value pairs. Comma separated
+        tabIndex: 0,
+        text1: "",
+        text2: "",
+        size: "",
+        variant: "",
+        modalShow: false,
+        items: [],
+        netEarnings: 0,
+        warningLevel: 0,
+
+      },
+      methods: {
+
+        //Methods go here. Comma separated
+        addRevenue() {
+
+          this.modalShow = !this.modalShow;
+
+          let amountEarned = this.text2;
+
+          var numItems = this.items.length;
+          this.items.push({
+            input1: this.text1,
+            input2: amountEarned
+          });
+
+          
+
+
+          this.text1 = ""
+          this.text2 = ""
+          this.tabIndex = 2;
+          this.netEarnings += parseInt(amountEarned)
+
+          
+          if (this.netEarnings < 0) {
+            this.warningLevel = 1;
+          }
+            
+        if (this.netEarnings < -200) {
+            this.warningLevel = 2;
+
+            alert("Your spending habits must be changed! You are loosing money fast!");
+            
+          } else if (this.netEarnings > 0) {
+            this.warningLevel = 0;
+          }
+        },
+          
+          
+        addExpense() {
+
+          this.modalShow = !this.modalShow;
+
+          let amount = this.text2;
+
+            //For the expenses make amount negative
+            amount = -amount
+          
+
+          var numItems = this.items.length;
+          this.items.push({
+            input1: this.text1,
+            input2: amount
+          });
+
+          
+
+
+          this.text1 = ""
+          this.text2 = ""
+          this.tabIndex = 2;
+          this.netEarnings += parseInt(amount)
+
+          
+        if (this.netEarnings > 0) {
+            this.warningLevel = 0;
+          }
+            
+          if(this.netEarnings < 0) {
+            this.warningLevel = 1;
+          } 
+
+          if (this.netEarnings < -200) {
+            this.warningLevel = 2;
+
+            alert("Your spending habits must be changed! You are loosing money fast!")
+          }
+
+          
+        }
+          
+          
+
+      }
+
+    })
+  </script>
+
+
+</body>
+
+</html>
